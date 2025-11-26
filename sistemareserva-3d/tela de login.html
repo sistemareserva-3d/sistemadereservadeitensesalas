@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela de Login</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100%;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Login Screen Styles */
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 48px 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .login-title {
+      margin: 0 0 8px 0;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .login-subtitle {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: currentColor;
+    }
+
+    .form-input::placeholder {
+      opacity: 0.5;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .login-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-button:active {
+      transform: translateY(0);
+    }
+
+    .input-icon {
+      position: relative;
+    }
+
+    .input-icon svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      opacity: 0.5;
+    }
+
+    .input-icon .form-input {
+      padding-left: 48px;
+    }
+
+    /* Dashboard Screen Styles */
+    .dashboard-container {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-header {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-profile:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .user-status {
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    .dashboard-content {
+      flex: 1;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .dashboard-welcome {
+      font-size: 48px;
+      font-weight: 700;
+      margin: 0 0 16px 0;
+    }
+
+    .dashboard-description {
+      font-size: 20px;
+      opacity: 0.7;
+      margin: 0 0 40px 0;
+    }
+
+    .logout-button {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .logout-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .logout-button:active {
+      transform: translateY(0);
+    }
+
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 40px;
+    }
+
+    .dashboard-card {
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    .card-description {
+      font-size: 14px;
+      opacity: 0.7;
+      margin: 0;
+    }
+
+    /* Booking Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      margin-bottom: 32px;
+    }
+
+    .modal-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    .modal-subtitle {
+      font-size: 16px;
+      opacity: 0.7;
+      margin: 0;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      opacity: 0.6;
+    }
+
+    .close-button:hover {
+      opacity: 1;
+      transform: rotate(90deg);
+    }
+
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .submit-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .submit-button:active {
+      transform: translateY(0);
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-message.active {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+
+    .success-text {
+      font-size: 16px;
+      opacity: 0.7;
+      margin: 0 0 24px 0;
+    }
+
+    .back-button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-header {
+        padding: 16px 20px;
+      }
+
+      .dashboard-content {
+        padding: 40px 20px;
+      }
+
+      .dashboard-welcome {
+        font-size: 32px;
+      }
+
+      .dashboard-description {
+        font-size: 16px;
+      }
+
+      .user-info {
+        display: none;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Login Screen -->
+  <div class="screen active" id="loginScreen">
+   <div class="login-container" id="loginContainer">
+    <div class="login-card" id="loginCard">
+     <div class="login-header">
+      <h1 class="login-title" id="pageTitle">Bem-vindo</h1>
+      <p class="login-subtitle" id="subtitle">Faça login para continuar</p>
+     </div>
+     <form id="loginForm">
+      <div class="form-group"><label for="username" class="form-label" id="usernameLabel">Usuário</label>
+       <div class="input-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg><input type="text" id="username" class="form-input" placeholder="Digite seu usuário" required autocomplete="username">
+       </div>
+      </div>
+      <div class="form-group"><label for="password" class="form-label" id="passwordLabel">Senha</label>
+       <div class="input-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+        </svg><input type="password" id="password" class="form-input" placeholder="Digite sua senha" required autocomplete="current-password">
+       </div>
+      </div><button type="submit" class="login-button" id="loginButton">Entrar</button>
+     </form>
+    </div>
+   </div>
+  </div><!-- Dashboard Screen -->
+  <div class="screen" id="dashboardScreen">
+   <div class="dashboard-container" id="dashboardContainer">
+    <header class="dashboard-header" id="dashboardHeader">
+     <div class="dashboard-logo" id="dashboardLogo">
+      🏫 3D Colégios
+     </div>
+     <div class="user-profile" id="userProfile">
+      <div class="user-avatar" id="userAvatar">
+       U
+      </div>
+      <div class="user-info">
+       <div class="user-name" id="userName">
+        Usuário
+       </div>
+       <div class="user-status" id="userStatus">
+        Online
+       </div>
+      </div>
+     </div>
+    </header>
+    <main class="dashboard-content" id="dashboardContent">
+     <h1 class="dashboard-welcome" id="welcomeMessage">Bem-vindo ao seu painel</h1>
+     <p class="dashboard-description" id="dashboardDescription">Você está logado com sucesso!</p><button class="logout-button" id="logoutButton">Sair</button>
+     <div class="dashboard-cards">
+      <div class="dashboard-card" id="card1">
+       <div class="card-icon">
+        🎭
+       </div>
+       <h3 class="card-title">Auditório</h3>
+       <p class="card-description">Espaço para eventos e apresentações</p>
+      </div>
+      <div class="dashboard-card" id="card2">
+       <div class="card-icon">
+        💻
+       </div>
+       <h3 class="card-title">Informática</h3>
+       <p class="card-description">Laboratório de computação e tecnologia</p>
+      </div>
+      <div class="dashboard-card" id="card3">
+       <div class="card-icon">
+        🧪
+       </div>
+       <h3 class="card-title">Laboratório</h3>
+       <p class="card-description">Laboratório de química e biologia</p>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingModal">
+   <div class="modal-content" id="modalContent"><button class="close-button" id="closeModal">×</button>
+    <div class="booking-form-container" id="bookingFormContainer">
+     <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">Agendar Espaço</h2>
+      <p class="modal-subtitle" id="modalSubtitle">Preencha os dados para reservar</p>
+     </div>
+     <form class="booking-form" id="bookingForm">
+      <div class="form-group"><label for="bookingDate" class="form-label" id="dateLabel">Data</label> <input type="date" id="bookingDate" class="form-input" required>
+      </div>
+      <div class="form-group"><label for="bookingTime" class="form-label" id="timeLabel">Horário</label> <input type="time" id="bookingTime" class="form-input" required>
+      </div>
+      <div class="form-group"><label for="teacherName" class="form-label" id="teacherLabel">Nome do Professor</label> <input type="text" id="teacherName" class="form-input" placeholder="Digite o nome do professor" required>
+      </div><button type="submit" class="submit-button" id="submitButton">Confirmar Agendamento</button>
+     </form>
+    </div>
+    <div class="success-message" id="successMessage">
+     <div class="success-icon">
+      ✅
+     </div>
+     <h3 class="success-title" id="successTitle">Agendamento Confirmado!</h3>
+     <p class="success-text" id="successText">Seu espaço foi reservado com sucesso.</p><button class="back-button" id="backButton">Voltar ao Painel</button>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      background_color: '#f0f4f8',
+      card_color: '#ffffff',
+      text_color: '#1a202c',
+      primary_action_color: '#4f46e5',
+      secondary_surface_color: '#e5e7eb',
+      page_title: 'Bem-vindo',
+      subtitle: 'Faça login para continuar',
+      username_label: 'Usuário',
+      password_label: 'Senha',
+      button_text: 'Entrar',
+      welcome_message: 'Bem-vindo ao seu painel',
+      dashboard_description: 'Você está logado com sucesso!',
+      logout_button_text: 'Sair',
+      font_family: 'Inter',
+      font_size: 16
+    };
+
+    let config = { ...defaultConfig };
+    let currentUser = '';
+
+    async function onConfigChange(newConfig) {
+      config = { ...config, ...newConfig };
+
+      const baseSize = config.font_size || defaultConfig.font_size;
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif';
+
+      // Apply colors to login screen
+      document.getElementById('loginContainer').style.backgroundColor = config.background_color || defaultConfig.background_color;
+      document.getElementById('loginCard').style.backgroundColor = config.card_color || defaultConfig.card_color;
+      
+      const textColor = config.text_color || defaultConfig.text_color;
+      document.getElementById('pageTitle').style.color = textColor;
+      document.getElementById('subtitle').style.color = textColor;
+      document.getElementById('usernameLabel').style.color = textColor;
+      document.getElementById('passwordLabel').style.color = textColor;
+      
+      const inputs = document.querySelectorAll('.form-input');
+      inputs.forEach(input => {
+        input.style.backgroundColor = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+        input.style.color = textColor;
+        input.style.borderColor = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+      });
+
+      const icons = document.querySelectorAll('.input-icon svg');
+      icons.forEach(icon => {
+        icon.style.color = textColor;
+      });
+
+      const loginButton = document.getElementById('loginButton');
+      loginButton.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      loginButton.style.color = '#ffffff';
+
+      // Apply colors to dashboard screen
+      document.getElementById('dashboardContainer').style.backgroundColor = config.background_color || defaultConfig.background_color;
+      document.getElementById('dashboardHeader').style.backgroundColor = config.card_color || defaultConfig.card_color;
+      document.getElementById('dashboardLogo').style.color = textColor;
+      document.getElementById('userName').style.color = textColor;
+      document.getElementById('userStatus').style.color = textColor;
+      document.getElementById('welcomeMessage').style.color = textColor;
+      document.getElementById('dashboardDescription').style.color = textColor;
+      
+      const userProfile = document.getElementById('userProfile');
+      userProfile.style.backgroundColor = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+      
+      const userAvatar = document.getElementById('userAvatar');
+      userAvatar.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      userAvatar.style.color = '#ffffff';
+
+      const logoutButton = document.getElementById('logoutButton');
+      logoutButton.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      logoutButton.style.color = '#ffffff';
+
+      const cards = document.querySelectorAll('.dashboard-card');
+      cards.forEach(card => {
+        card.style.backgroundColor = config.card_color || defaultConfig.card_color;
+      });
+
+      const cardTitles = document.querySelectorAll('.card-title');
+      cardTitles.forEach(title => {
+        title.style.color = textColor;
+      });
+
+      const cardDescriptions = document.querySelectorAll('.card-description');
+      cardDescriptions.forEach(desc => {
+        desc.style.color = textColor;
+      });
+
+      // Apply text content
+      document.getElementById('pageTitle').textContent = config.page_title || defaultConfig.page_title;
+      document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+      document.getElementById('usernameLabel').textContent = config.username_label || defaultConfig.username_label;
+      document.getElementById('passwordLabel').textContent = config.password_label || defaultConfig.password_label;
+      document.getElementById('loginButton').textContent = config.button_text || defaultConfig.button_text;
+      document.getElementById('welcomeMessage').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('dashboardDescription').textContent = config.dashboard_description || defaultConfig.dashboard_description;
+      document.getElementById('logoutButton').textContent = config.logout_button_text || defaultConfig.logout_button_text;
+
+      // Apply fonts
+      document.getElementById('pageTitle').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('subtitle').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('usernameLabel').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('passwordLabel').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('loginButton').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('dashboardLogo').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('userName').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('welcomeMessage').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('dashboardDescription').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.getElementById('logoutButton').style.fontFamily = `${customFont}, ${baseFontStack}`;
+      
+      inputs.forEach(input => {
+        input.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      });
+
+      cardTitles.forEach(title => {
+        title.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      });
+
+      cardDescriptions.forEach(desc => {
+        desc.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      });
+
+      // Apply font sizes
+      document.getElementById('pageTitle').style.fontSize = `${baseSize * 2}px`;
+      document.getElementById('subtitle').style.fontSize = `${baseSize}px`;
+      document.getElementById('usernameLabel').style.fontSize = `${baseSize * 0.875}px`;
+      document.getElementById('passwordLabel').style.fontSize = `${baseSize * 0.875}px`;
+      document.getElementById('loginButton').style.fontSize = `${baseSize}px`;
+      document.getElementById('dashboardLogo').style.fontSize = `${baseSize * 1.5}px`;
+      document.getElementById('userName').style.fontSize = `${baseSize * 0.875}px`;
+      document.getElementById('userStatus').style.fontSize = `${baseSize * 0.75}px`;
+      document.getElementById('welcomeMessage').style.fontSize = `${baseSize * 3}px`;
+      document.getElementById('dashboardDescription').style.fontSize = `${baseSize * 1.25}px`;
+      document.getElementById('logoutButton').style.fontSize = `${baseSize}px`;
+      
+      inputs.forEach(input => {
+        input.style.fontSize = `${baseSize}px`;
+      });
+
+      cardTitles.forEach(title => {
+        title.style.fontSize = `${baseSize * 1.25}px`;
+      });
+
+      cardDescriptions.forEach(desc => {
+        desc.style.fontSize = `${baseSize * 0.875}px`;
+      });
+
+      // Update modal colors when config changes
+      updateModalColors();
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.card_color || defaultConfig.card_color,
+            set: (value) => {
+              config.card_color = value;
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ card_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              config.primary_action_color = value;
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_surface_color || defaultConfig.secondary_surface_color,
+            set: (value) => {
+              config.secondary_surface_color = value;
+              if (window.elementSdk) {
+                window.elementSdk.setConfig({ secondary_surface_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            if (window.elementSdk) {
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['page_title', config.page_title || defaultConfig.page_title],
+        ['subtitle', config.subtitle || defaultConfig.subtitle],
+        ['username_label', config.username_label || defaultConfig.username_label],
+        ['password_label', config.password_label || defaultConfig.password_label],
+        ['button_text', config.button_text || defaultConfig.button_text],
+        ['welcome_message', config.welcome_message || defaultConfig.welcome_message],
+        ['dashboard_description', config.dashboard_description || defaultConfig.dashboard_description],
+        ['logout_button_text', config.logout_button_text || defaultConfig.logout_button_text]
+      ]);
+    }
+
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Form submission handler
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      currentUser = username;
+      
+      // Update user info in dashboard
+      document.getElementById('userName').textContent = username;
+      document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+      
+      // Switch to dashboard screen
+      document.getElementById('loginScreen').classList.remove('active');
+      document.getElementById('dashboardScreen').classList.add('active');
+      
+      // Clear form
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    });
+
+    // Logout handler
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      currentUser = '';
+      
+      // Switch back to login screen
+      document.getElementById('dashboardScreen').classList.remove('active');
+      document.getElementById('loginScreen').classList.add('active');
+    });
+
+    // Apply initial config
+    onConfigChange(defaultConfig);
+
+    // Booking modal functionality
+    let selectedSpace = '';
+
+    // Add click handlers to cards
+    document.getElementById('card1').addEventListener('click', function() {
+      selectedSpace = 'Auditório';
+      openBookingModal();
+    });
+
+    document.getElementById('card2').addEventListener('click', function() {
+      selectedSpace = 'Informática';
+      openBookingModal();
+    });
+
+    document.getElementById('card3').addEventListener('click', function() {
+      selectedSpace = 'Laboratório 2';
+      openBookingModal();
+    });
+
+    function openBookingModal() {
+      document.getElementById('modalSubtitle').textContent = `Reservar ${selectedSpace}`;
+      document.getElementById('bookingModal').classList.add('active');
+      document.getElementById('bookingFormContainer').style.display = 'block';
+      document.getElementById('successMessage').classList.remove('active');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.remove('active');
+      document.getElementById('bookingForm').reset();
+    }
+
+    // Close modal button
+    document.getElementById('closeModal').addEventListener('click', closeBookingModal);
+
+    // Close modal when clicking outside
+    document.getElementById('bookingModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeBookingModal();
+      }
+    });
+
+    // Booking form submission
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const date = document.getElementById('bookingDate').value;
+      const time = document.getElementById('bookingTime').value;
+      const teacher = document.getElementById('teacherName').value;
+      
+      // Show success message
+      document.getElementById('bookingFormContainer').style.display = 'none';
+      document.getElementById('successMessage').classList.add('active');
+      
+      // Update success text with booking details
+      const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+      document.getElementById('successText').textContent = 
+        `${selectedSpace} reservado para ${formattedDate} às ${time} com o professor ${teacher}.`;
+    });
+
+    // Back button in success message
+    document.getElementById('backButton').addEventListener('click', function() {
+      closeBookingModal();
+    });
+
+    // Apply modal colors
+    function updateModalColors() {
+      const modalContent = document.getElementById('modalContent');
+      const closeButton = document.getElementById('closeModal');
+      const submitButton = document.getElementById('submitButton');
+      const backButton = document.getElementById('backButton');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalSubtitle = document.getElementById('modalSubtitle');
+      const dateLabel = document.getElementById('dateLabel');
+      const timeLabel = document.getElementById('timeLabel');
+      const teacherLabel = document.getElementById('teacherLabel');
+      const successTitle = document.getElementById('successTitle');
+      const successText = document.getElementById('successText');
+      
+      const textColor = config.text_color || defaultConfig.text_color;
+      
+      modalContent.style.backgroundColor = config.card_color || defaultConfig.card_color;
+      closeButton.style.color = textColor;
+      modalTitle.style.color = textColor;
+      modalSubtitle.style.color = textColor;
+      dateLabel.style.color = textColor;
+      timeLabel.style.color = textColor;
+      teacherLabel.style.color = textColor;
+      successTitle.style.color = textColor;
+      successText.style.color = textColor;
+      
+      submitButton.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      submitButton.style.color = '#ffffff';
+      
+      backButton.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      backButton.style.color = '#ffffff';
+      
+      const modalInputs = document.querySelectorAll('#bookingForm .form-input');
+      modalInputs.forEach(input => {
+        input.style.backgroundColor = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+        input.style.color = textColor;
+        input.style.borderColor = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+      });
+    }
+
+    // Call updateModalColors initially and whenever config changes
+    updateModalColors();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99d6b7f1108af19c',t:'MTc2Mjk1NzczNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

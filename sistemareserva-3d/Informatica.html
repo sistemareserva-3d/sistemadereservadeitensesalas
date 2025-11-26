@@ -1,0 +1,275 @@
+<!-- Informática Dashboard Card -->
+<div class="dashboard-card" id="card1">
+  <div class="card-icon">
+    💻
+  </div>
+  <h3 class="card-title">Informatica</h3>
+  <p class="card-description">Laboratório de computação e tecnologia</p>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal-content" id="modalContent">
+    <button class="close-button" id="closeModal">×</button>
+    <div class="booking-form-container" id="bookingFormContainer">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Agendar Espaço</h2>
+        <p class="modal-subtitle" id="modalSubtitle">Preencha os dados para reservar</p>
+      </div>
+      <form class="booking-form" id="bookingForm">
+        <div class="form-group">
+          <label for="bookingDate" class="form-label" id="dateLabel">Data</label>
+          <input type="date" id="bookingDate" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="bookingTime" class="form-label" id="timeLabel">Horário</label>
+          <input type="time" id="bookingTime" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="teacherName" class="form-label" id="teacherLabel">Nome do Professor</label>
+          <input type="text" id="teacherName" class="form-input" placeholder="Digite o nome do professor" required>
+        </div>
+        <button type="submit" class="submit-button" id="submitButton">Confirmar Agendamento</button>
+      </form>
+    </div>
+    <div class="success-message" id="successMessage">
+      <div class="success-icon">
+        ✅
+      </div>
+      <h3 class="success-title" id="successTitle">Agendamento Confirmado!</h3>
+      <p class="success-text" id="successText">Seu espaço foi reservado com sucesso.</p>
+      <button class="back-button" id="backButton">Voltar ao Painel</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Dashboard Card Style */
+  .dashboard-card {
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    max-width: 250px;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+  }
+
+  .card-description {
+    font-size: 14px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  /* Booking Modal Styles */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+   .modal-content {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  max-height: 90%;
+  overflow-y: auto;
+  background-color: white;
+  }
+
+  .modal-header {
+    margin-bottom: 32px;
+  }
+
+  .modal-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+  }
+
+  .modal-subtitle {
+    font-size: 16px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+  }
+
+  .close-button:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  .booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    font-family: inherit;
+  }
+
+  .submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .submit-button:active {
+    transform: translateY(0);
+  }
+
+  .success-message {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .success-message.active {
+    display: block;
+  }
+
+  .success-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .success-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+  }
+
+  .success-text {
+    font-size: 16px;
+    opacity: 0.7;
+    margin: 0 0 24px 0;
+  }
+
+  .back-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+
+  .back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+</style>
+
+<script>
+  // Booking modal functionality specific to Auditório card
+  let selectedSpace = '';
+
+  // Add click handler to the Auditório card
+  document.getElementById('card1').addEventListener('click', function() {
+    selectedSpace = 'Auditório';
+    openBookingModal();
+  });
+
+  function openBookingModal() {
+    document.getElementById('modalSubtitle').textContent = `Reservar ${selectedSpace}`;
+    document.getElementById('bookingModal').classList.add('active');
+    document.getElementById('bookingFormContainer').style.display = 'block';
+    document.getElementById('successMessage').classList.remove('active');
+  }
+
+  function closeBookingModal() {
+    document.getElementById('bookingModal').classList.remove('active');
+    document.getElementById('bookingForm').reset();
+  }
+
+  // Close modal button
+  document.getElementById('closeModal').addEventListener('click', closeBookingModal);
+
+  // Close modal when clicking outside
+  document.getElementById('bookingModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeBookingModal();
+    }
+  });
+
+  // Booking form submission
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const date = document.getElementById('bookingDate').value;
+    const time = document.getElementById('bookingTime').value;
+    const teacher = document.getElementById('teacherName').value;
+
+    // Show success message
+    document.getElementById('bookingFormContainer').style.display = 'none';
+    document.getElementById('successMessage').classList.add('active');
+
+    // Update success text with booking details
+    const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+    document.getElementById('successText').textContent =
+      `${selectedSpace} reservado para ${formattedDate} às ${time} com o professor ${teacher}.`;
+  });
+
+  // Back button in success message
+  document.getElementById('backButton').addEventListener('click', function() {
+    closeBookingModal();
+  });
+</script>
